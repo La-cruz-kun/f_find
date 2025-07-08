@@ -27,6 +27,7 @@ A simple command‑line tool to search for files by name, scan text files for a 
     mv ./ffind $HOME/.local/bin
 
 ## Usage
+
     ```bash
     ffind [pattern (required)] [depth (optional with default 1)] [path (optional with default ".")]
 
