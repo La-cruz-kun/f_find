@@ -16,18 +16,18 @@ A simple command‑line tool to search for files by name, scan text files for a 
 1. Clone the repository:
    ```bash
    git clone https://github.com/yourusername/file-searcher.git
-   cd file-searcher```
+   cd file-searcher
 
 2. Compile
     ```bash
-    make```
+    make
 
 3. Move to bin directory (Optional)
     ```bash
-    mv ./ffind $HOME/.local/bin```
+    mv ./ffind $HOME/.local/bin
 
 ## Usage
     ```bash
-    ffind [pattern (required)] [depth (optional with default 1)] [path (optional with default ".")]```
+    ffind [pattern (required)] [depth (optional with default 1)] [path (optional with default ".")]
 
 
