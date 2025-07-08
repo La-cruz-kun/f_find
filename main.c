@@ -2,9 +2,10 @@
 #include <dirent.h>
 #include <stdbool.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
-bool f_parse_ex(const char *pattern, const char *path) {
+bool f_parse_ex(const char *pattern, const char *path, unsigned int depth) {
     DIR *dir = opendir(path);
     if (!dir) {
         perror("Unable to open path");
@@ -46,7 +47,10 @@ bool f_parse_ex(const char *pattern, const char *path) {
             strcat(new_path, path);
             strcat(new_path, "/");
             strcat(new_path, entry->d_name);
-            f_parse_ex(pattern, new_path);
+
+            if (depth > 0) {
+                f_parse_ex(pattern, new_path, depth - 1);
+            }
             break;
         }
     }
@@ -56,6 +60,7 @@ bool f_parse_ex(const char *pattern, const char *path) {
 int main(int argc, char *argv[]) {
     char pattern[64] = {0};
     char path[512] = {0};
+    unsigned int depth = 1;
     if (argc == 1) {
         printf("TODO USAGE\n");
         printf("argc 1\n");
@@ -67,7 +72,7 @@ int main(int argc, char *argv[]) {
         strcpy(path, ".");
         printf("pattern is: %s\n", pattern);
         printf("argc 2\n");
-        f_parse_ex(pattern, ".");
+        f_parse_ex(pattern, ".", depth);
     }
 
     else if (argc == 3) {
@@ -76,7 +81,16 @@ int main(int argc, char *argv[]) {
         printf("pattern is: %s\n", pattern);
         printf("path is: %s\n", path);
         printf("argc 3\n");
-        f_parse_ex(pattern, path);
+        f_parse_ex(pattern, path, depth);
+    }
+    else if (argc == 4) {
+        strcpy(pattern, argv[1]);
+        strcpy(path, argv[2]);
+        depth = atoi(argv[3]);
+        printf("pattern is: %s\n", pattern);
+        printf("path is: %s\n", path);
+        printf("argc 3\n");
+        f_parse_ex(pattern, path, depth);
     }
 
     /* if (!parse_dir(path)) */

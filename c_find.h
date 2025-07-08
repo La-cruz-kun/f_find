@@ -11,7 +11,7 @@ typedef enum { F_TXT,
 
 F_EXT f_get_file_extension(const char *file);
 bool f_parse_file_title(const char *pattern, const char *file);
-bool f_parse_ex(const char *pattern, const char *path);
+bool f_parse_ex(const char *pattern, const char *path,unsigned int depth);
 bool f_parse_txt(const char *pattern, const char *file);
 void f_parse_pdf(const char *pattern, const char *file);
 #endif // C_FIND_H
