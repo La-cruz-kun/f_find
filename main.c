@@ -54,6 +54,8 @@ bool f_parse_ex(const char *pattern, const char *path, unsigned int depth) {
             break;
         }
     }
+    free(entry);
+    closedir(dir);
     return 0;
 }
 
@@ -63,7 +65,6 @@ int main(int argc, char *argv[]) {
     unsigned int depth = 1;
     if (argc == 1) {
         printf("TODO USAGE\n");
-        printf("argc 1\n");
         return -1;
     }
 
@@ -72,25 +73,20 @@ int main(int argc, char *argv[]) {
         strcpy(path, ".");
         printf("pattern is: %s\n", pattern);
         printf("argc 2\n");
-        f_parse_ex(pattern, ".", depth);
+        f_parse_ex(pattern, path, depth);
     }
 
     else if (argc == 3) {
         strcpy(pattern, argv[1]);
-        strcpy(path, argv[2]);
-        printf("pattern is: %s\n", pattern);
-        printf("path is: %s\n", path);
-        printf("argc 3\n");
+        depth = atoi(argv[2]);
+        strcpy(path, ".");
         f_parse_ex(pattern, path, depth);
     }
     else if (argc == 4) {
         strcpy(pattern, argv[1]);
-        strcpy(path, argv[2]);
-        depth = atoi(argv[3]);
-        printf("pattern is: %s\n", pattern);
-        printf("path is: %s\n", path);
-        printf("argc 3\n");
-        f_parse_ex(pattern, path, depth);
+        depth = atoi(argv[2]);
+        strcpy(path, argv[3]);
+        f_parse_ex(pattern, ".", depth);
     }
 
     /* if (!parse_dir(path)) */
@@ -116,9 +112,11 @@ bool f_parse_txt(const char *pattern, const char *file) {
             printf("FOUND '%s' in file %s at line %u\n", pattern, file, count);
             printf("\n");
             printf("READ: %s", line);
+            fclose(f);
             return true;
         }
     }
+    fclose(f);
 
     return true;
 }
