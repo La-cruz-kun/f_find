@@ -19,16 +19,16 @@ A simple command‑line tool to search for files by name, scan text files for a 
    cd file-searcher```
 
 2. Compile
-```bash
+    ```bash
     make
 ```
 3. Move to bin directory (Optional)
-```bash
+    ```bash
     mv ./ffind $HOME/.local/bin
 ```
 
 ## Usage
-```bash
+    ```bash
     ffind [pattern (required)] [depth (optional with default 1)] [path (optional with default ".")]
 ```
 
