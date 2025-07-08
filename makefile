@@ -1,3 +1,3 @@
-CFLAGS = -Wall -Wextra -pedantic
+CFLAGS = -ggdb -Wall -Wextra -pedantic
 main: main.c
 	gcc main.c $(CFLAGS) -o main
