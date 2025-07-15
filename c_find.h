@@ -2,8 +2,16 @@
 #define C_FIND_H
 #include <stdbool.h>
 
+typedef enum {
+    OPT_EXCLUSIVE = 1000,
+    OPT_PATH
+} OPTION;
+
 typedef enum { F_TXT,
                F_PDF,
+               F_PY,
+               F_CPP,
+               F_RS,
                F_H,
                F_C,
                F_NONE

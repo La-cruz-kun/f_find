@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <getopt.h>
 
 bool f_parse_ex(const char *pattern, const char *path, unsigned int depth) {
     DIR *dir = opendir(path);
@@ -27,7 +28,10 @@ bool f_parse_ex(const char *pattern, const char *path, unsigned int depth) {
             f_parse_file_title(pattern, file_path);
 
             switch (f_get_file_extension(file_path)) {
-
+            case F_C:
+            case F_CPP:
+            case F_H:
+            case F_PY:
             case F_TXT:
                 f_parse_txt(pattern, file_path);
                 break;
@@ -63,39 +67,46 @@ int main(int argc, char *argv[]) {
     char pattern[64] = {0};
     char path[512] = {0};
     unsigned int depth = 1;
-    if (argc == 1) {
-        printf("TODO USAGE\n");
+    static struct option long_opts[] = {
+        {"depth", required_argument, NULL, 'd'},
+        {"path", required_argument, NULL, OPT_PATH},
+        {"pattern", required_argument, NULL, 'p'},
+        {"exclusive-file-format", required_argument, NULL, OPT_EXCLUSIVE},
+    };
+
+    const char *short_opts = "p:d:r:";
+
+    int opts;
+
+    while ((opts = getopt_long(argc, argv, short_opts, long_opts, NULL)) != EOF) {
+        switch (opts) {
+        case OPT_PATH:
+            strcpy(path, optarg);
+            break;
+        case 'd':
+            depth = atoi(optarg);
+            break;
+        case 'p':
+            strcpy(pattern, optarg);
+            break;
+        case OPT_EXCLUSIVE:
+            printf("TODO EXCLUSIVE");
+            break;
+        default:
+            abort();
+        }
+    }
+
+    if (!(*pattern)) {
+        printf("TODO help\n");
         return -1;
     }
-
-    else if (argc == 2) {
-        strcpy(pattern, argv[1]);
+    if (!(*path)) {
         strcpy(path, ".");
-        printf("pattern is: %s\n", pattern);
-        printf("argc 2\n");
-        if (!f_parse_ex(pattern, path, depth))
-            return -1;
     }
 
-    else if (argc == 3) {
-        strcpy(pattern, argv[1]);
-        depth = atoi(argv[2]);
-        strcpy(path, ".");
-        if (!f_parse_ex(pattern, path, depth))
-            return -1;
-    }
-    else if (argc == 4) {
-        strcpy(pattern, argv[1]);
-        depth = atoi(argv[2]);
-        strcpy(path, argv[3]);
-        if (!f_parse_ex(pattern, path, depth))
-            return -1;
-    }
-
-    /* if (!parse_dir(path)) */
-    /*   return -1; */
-
-    printf("\n");
+    if (!f_parse_ex(pattern, path, depth))
+        return -1;
 
     return 0;
 }
