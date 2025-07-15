@@ -6,6 +6,66 @@
 #include <string.h>
 #include <getopt.h>
 
+bool PARSE_FILE = false;
+F_EXT exclusive_file = F_NONE;
+
+int main(int argc, char *argv[]) {
+    char pattern[64] = {0};
+    char path[512] = {0};
+    unsigned int depth = 1;
+    static struct option long_opts[] = {
+        {"depth", required_argument, NULL, 'd'},
+        {"path", required_argument, NULL, OPT_PATH},
+        {"pattern", required_argument, NULL, 'p'},
+        {"help", required_argument, NULL, 'h'},
+        {"exclusive-file-format", required_argument, NULL, OPT_EXCLUSIVE},
+        {"parse-files", no_argument, NULL, OPT_PARSE_FILES},
+    };
+
+    const char *short_opts = "p:d:r:h:";
+    int opts;
+
+    while ((opts = getopt_long(argc, argv, short_opts, long_opts, NULL)) != EOF) {
+        switch (opts) {
+        case OPT_PATH:
+            strcpy(path, optarg);
+            break;
+        case 'd':
+            depth = atoi(optarg);
+            break;
+        case 'p':
+            strcpy(pattern, optarg);
+            break;
+        case OPT_EXCLUSIVE:
+            printf("TODO EXCLUSIVE");
+            break;
+        case 'h':
+            printf("TODO help\n");
+            break;
+        case OPT_PARSE_FILES:
+            PARSE_FILE = true;
+            break;
+        default:
+            abort();
+        }
+    }
+
+    if (!(*pattern)) {
+        printf("TODO help\n");
+        print_help();
+        return -1;
+    }
+    if (!(*path)) {
+        strcpy(path, ".");
+    }
+
+    if (!f_parse_ex(pattern, path, depth))
+        return -1;
+
+    return 0;
+}
+
+
 bool f_parse_ex(const char *pattern, const char *path, unsigned int depth) {
     DIR *dir = opendir(path);
     if (!dir) {
@@ -27,23 +87,27 @@ bool f_parse_ex(const char *pattern, const char *path, unsigned int depth) {
             strcat(file_path, entry->d_name);
             f_parse_file_title(pattern, file_path);
 
-            switch (f_get_file_extension(file_path)) {
-            case F_C:
-            case F_CPP:
-            case F_H:
-            case F_PY:
-            case F_TXT:
-                f_parse_txt(pattern, file_path);
-                break;
+            if (PARSE_FILE) {
 
-            case F_PDF:
-                f_parse_pdf(pattern, file_path);
-                break;
+                switch (f_get_file_extension(file_path)) {
+                case F_C:
+                case F_CPP:
+                case F_H:
+                case F_PY:
+                case F_TXT:
+                    f_parse_txt(pattern, file_path);
+                    break;
 
-            default:
-                // TODO
-                break;
+                case F_PDF:
+                    f_parse_pdf(pattern, file_path);
+                    break;
+
+                default:
+                    // TODO
+                    break;
+                }
             }
+
             break;
 
         case DT_DIR:
@@ -63,53 +127,7 @@ bool f_parse_ex(const char *pattern, const char *path, unsigned int depth) {
     return 0;
 }
 
-int main(int argc, char *argv[]) {
-    char pattern[64] = {0};
-    char path[512] = {0};
-    unsigned int depth = 1;
-    static struct option long_opts[] = {
-        {"depth", required_argument, NULL, 'd'},
-        {"path", required_argument, NULL, OPT_PATH},
-        {"pattern", required_argument, NULL, 'p'},
-        {"exclusive-file-format", required_argument, NULL, OPT_EXCLUSIVE},
-    };
 
-    const char *short_opts = "p:d:r:";
-
-    int opts;
-
-    while ((opts = getopt_long(argc, argv, short_opts, long_opts, NULL)) != EOF) {
-        switch (opts) {
-        case OPT_PATH:
-            strcpy(path, optarg);
-            break;
-        case 'd':
-            depth = atoi(optarg);
-            break;
-        case 'p':
-            strcpy(pattern, optarg);
-            break;
-        case OPT_EXCLUSIVE:
-            printf("TODO EXCLUSIVE");
-            break;
-        default:
-            abort();
-        }
-    }
-
-    if (!(*pattern)) {
-        printf("TODO help\n");
-        return -1;
-    }
-    if (!(*path)) {
-        strcpy(path, ".");
-    }
-
-    if (!f_parse_ex(pattern, path, depth))
-        return -1;
-
-    return 0;
-}
 bool f_parse_txt(const char *pattern, const char *file) {
     FILE *f = fopen(file, "r");
 
@@ -130,10 +148,12 @@ bool f_parse_txt(const char *pattern, const char *file) {
             return true;
         }
     }
-    fclose(f);
 
+    fclose(f);
     return true;
 }
+
+
 bool f_parse_file_title(const char *pattern, const char *file) {
     if (strstr(file, pattern) != NULL) {
         printf("FOUND file '%s' \n", file);
@@ -145,6 +165,8 @@ bool f_parse_file_title(const char *pattern, const char *file) {
 
 // TODO
 void f_parse_pdf(const char *pattern, const char *file) {}
+
+
 F_EXT f_get_file_extension(const char *file) {
     if (file == NULL) {
         perror("can't get extension file doesn't exist");
@@ -170,6 +192,21 @@ F_EXT f_get_file_extension(const char *file) {
     if (strcmp(last, "txt") == 0) {
         return F_TXT;
     }
+    if (strcmp(last, "c") == 0) {
+        return F_C;
+    }
+    if (strcmp(last, "cpp") == 0) {
+        return F_CPP;
+    }
+    if (strcmp(last, "h") == 0) {
+        return F_H;
+    }
+    if (strcmp(last, "py") == 0) {
+        return F_PY;
+    }
 
     return F_NONE;
 }
+
+//TODO
+void print_help() {}
