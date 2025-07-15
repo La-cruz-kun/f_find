@@ -73,20 +73,23 @@ int main(int argc, char *argv[]) {
         strcpy(path, ".");
         printf("pattern is: %s\n", pattern);
         printf("argc 2\n");
-        f_parse_ex(pattern, path, depth);
+        if (!f_parse_ex(pattern, path, depth))
+            return -1;
     }
 
     else if (argc == 3) {
         strcpy(pattern, argv[1]);
         depth = atoi(argv[2]);
         strcpy(path, ".");
-        f_parse_ex(pattern, path, depth);
+        if (!f_parse_ex(pattern, path, depth))
+            return -1;
     }
     else if (argc == 4) {
         strcpy(pattern, argv[1]);
         depth = atoi(argv[2]);
         strcpy(path, argv[3]);
-        f_parse_ex(pattern, ".", depth);
+        if (!f_parse_ex(pattern, path, depth))
+            return -1;
     }
 
     /* if (!parse_dir(path)) */
