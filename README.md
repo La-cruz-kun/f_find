@@ -22,7 +22,7 @@ A simple command‑line tool to search for files by name, scan text files for a 
     ```bash
     make
 
-3. Move to bin directory (Optional)
+3. Move to bin to your bin directory (Optional)
     ```bash
     mv ./ffind $HOME/.local/bin
 
