@@ -1,4 +1,4 @@
-# file-searcher
+# ffind
 
 A simple command‑line tool to search for files by name, scan text files for a keyword, and report line numbers—all while respecting a configurable directory traversal depth.
 
@@ -28,7 +28,16 @@ A simple command‑line tool to search for files by name, scan text files for a 
 
 ## Usage
 
-```bash
-ffind [pattern (required)] [depth (optional with default 1)] [path (optional with default ".")]
+    ffind -p [pattern] [options]
+
+### Mandatory Arguments  
+    -p, --pattern <pattern>   the pattern to search for
+
+### Optional Arguments
+    -h, --help                print the help message
+    -d, --depth <default=1>   how deep into a directory you want to tranverse
+    --path <default=.>        manually specify a path
+    --exclusive <extension>   to search only a specify file type
+    --parse                   to enable parse of files to check the pattern in the content of the files
 
 
